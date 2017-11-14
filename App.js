@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator, Button } from 'react-native';
 
 import someRenderFunction from './myLib';
 
@@ -56,6 +56,16 @@ export default class App extends React.Component {
   }
 
 
+  onJoin = (inputText) => {
+    this.setState({activity: true});
+    setTimeout(() => {
+        this.setState({
+         activity: false,
+         screen: ENTER_JOB,
+       });
+    }, 1500);
+  }
+
   // This function is the main render function for the whole application.
   // We really just SWITCH between different views.
   // Probably all the views should really be defined in individual components
@@ -84,18 +94,21 @@ export default class App extends React.Component {
       case ENTER_CODE:
          // This is just to show how you don't have to have all your JSX in-line, but
          // you can call other functions (even in other libraries!) that return JSX
-         return someRenderFunction();
-         break;
-
+        return(
+        <KeyboardAvoidingView behavior={'padding'} style={[styles.centeredView, {backgroundColor: 'white', padding: 40}]}>
+          <TextInput placeholder="Enter Code" keyboardType={'numeric'} maxLength={12} style={styles.phoneNumberInput} editable={!this.state.activity}/>
+          <Button onPress={this.onJoin} title="JOIN" color="#841584" accessibilityLabel="Learn more about this purple button"/>
+          <ActivityIndicator animating={this.state.activity} size={'large'} style={{margin: 20}}/>
+        </KeyboardAvoidingView>
+        );
+        break;
+        
       case ENTER_PHONE:
       default:
         return (
-            <KeyboardAvoidingView behavior={'padding'} style={[styles.centeredView, {backgroundColor: 'black', padding: 40}]}>
-              <Text style={{color: 'white'}}>
-                 Welcome. In order to connect you with hundreds of nearby helpers,
-                 let's to make sure you can receive SMS Messages.
-              </Text>
-              <TextInput keyboardType={'numeric'} maxLength={12} style={styles.phoneNumberInput} onEndEditing={this.onPhoneNumber} editable={!this.state.activity}/>
+            <KeyboardAvoidingView behavior={'padding'} style={[styles.centeredView, {backgroundColor: 'white', padding: 40}]}>
+              <TextInput placeholder="Enter Number" keyboardType={'numeric'} maxLength={12} style={styles.phoneNumberInput} editable={!this.state.activity}/>
+              <Button onPress={this.onPhoneNumber} title="Send Code" color="#841584" accessibilityLabel="Learn more about this purple button"/>
               <ActivityIndicator animating={this.state.activity} size={'large'} style={{margin: 20}}/>
             </KeyboardAvoidingView>
         );
@@ -125,10 +138,13 @@ const styles = StyleSheet.create({
   // Probably this style should get moved into a dedicated PhoneValidation component.
   phoneNumberInput: {
     marginTop: 20,
-    fontSize: 45,
-    color: 'white',
+    marginBottom:20,
+    fontSize: 20,
+    color: 'black',
     textAlign: 'center',
-    backgroundColor: '#222'
+    lineHeight:20,
+    height:40,
+    backgroundColor: 'white'
   }
 });
 
