@@ -27,6 +27,7 @@ export default class MyMap extends React.Component {
     super(props);
     this.state = {locationResult: null, errorMsg:null}
     //this.locationChanged();
+    this.onRegionChange = this.onRegionChange.bind(this);
   }
 
   getInitialState() {
@@ -95,7 +96,7 @@ export default class MyMap extends React.Component {
         <MapView
           style={styles.map}
           region={this.state.locationResult}
-          onRegionChange={this.onRegionChange.bind(this)}>
+          onRegionChange={this.onRegionChange}>
           <MapView.Circle center={{latitude: lat, longitude: lng}} radius={100} strokeWidth={10} strokeColor={'rgba(200, 200, 255, .4)'}/>
         </MapView>
       </View>

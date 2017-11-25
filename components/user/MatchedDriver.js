@@ -34,7 +34,6 @@ export default class MatchedDriver extends React.Component {
            <Icon  name='sc-telegram' type='evilicon' color='#ffffff'/>
           <Text style={{width:200, alignSelf: 'center'}}> End Time </Text>
         </View>
-        <Button onPress={this.onPress} title="Submit" color="#841584"/>
       </View>
      </ScrollView>
     );

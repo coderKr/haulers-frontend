@@ -156,6 +156,20 @@ export default class App extends React.Component {
     }
   }
 
+  goToDriverInfo = () => {
+    this.setState({
+          activity: false,
+          screen: MATCH_DRIVER,
+        });
+  }
+
+  goBackToEnterJob = () => {
+     this.setState({
+          activity: false,
+          screen: ENTER_JOB,
+        });
+  }
+
   // This function is the main render function for the whole application.
   // We really just SWITCH between different views.
   // Probably all the views should really be defined in individual components
@@ -185,7 +199,7 @@ export default class App extends React.Component {
               <MyMap/>
             </View>
             <View style={{flex: 3, flexDirection: 'row'}}>
-              <Tabs />
+              <Tabs screenProps={this.goToDriverInfo}/>
             </View>
           </View>
 
@@ -208,6 +222,7 @@ export default class App extends React.Component {
             <View>
               <MatchDriver/>
             </View>
+            <Button onPress={this.goBackToEnterJob} title="Go back!" color="#841584"/>
           </View>
         );
         break;
@@ -235,7 +250,7 @@ const styles = StyleSheet.create({
     flexDirection:'column',
   },
   buttonUser:{
-    marginTop: 100,
+    margin: 20,
   },
   map: {
     flex:1 ,
