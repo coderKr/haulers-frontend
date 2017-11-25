@@ -1,17 +1,28 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator, Button } from 'react-native';
-
-import someRenderFunction from './myLib';
+import { StyleSheet, AsyncStorage, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator, Button, TouchableHighlight } from 'react-native';
 
 import MapView from 'react-native-maps';
-import MyMap from './MyMap';
+import MyMap from './components/user/MyMap';
+import MatchDriver from './components/user/MatchedDriver';
+import { Tabs }  from './components/user/TabView';
+const t = require('tcomb-form-native');
 
 // Possible Screen States (JS doesn't have Enum's)
+const ENTER_DRIVER_OR_USER = 'du';
 const ENTER_PHONE = 'ep';
 const ENTER_CODE  = 'ec';
 const ENTER_JOB   = 'ej';
 const SEARCHING   = 'sr';
-
+const MATCH_DRIVER = 'md';
+var Form = t.form.Form;
+var User = t.struct({
+  name: t.String,              // a required string
+  surname: t.maybe(t.String),  // an optional string
+  email: t.String,              
+  phone: t.Number        // a boolean
+});
+var options = {};
+var STORAGE_KEY = 'id_token';
 
 // This is the main application class.
 // 'export' means it can be accessed via an 'import' in another file
@@ -30,10 +41,10 @@ export default class App extends React.Component {
     // Although much state should be encapsulated in individual components
     this.state = {
       activity: false,
-      screen: ENTER_PHONE
+      screen: ENTER_DRIVER_OR_USER,
+      userType: 'Customer',
     }
   }
-
 
   // This function gets called when someone finishes entering their number.
   // It should probably get moved into a Component like
@@ -62,8 +73,87 @@ export default class App extends React.Component {
         this.setState({
          activity: false,
          screen: ENTER_JOB,
+
        });
     }, 1500);
+  }
+
+   onPress = () => {
+    var value = this.refs.form.getValue();
+    // if (value) { // if validation fails, value will be null
+    //   console.log(value); // value here is an instance of Person
+    // }
+    console.log(value.email);
+    fetch('http://100.64.4.146:8080/customer', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "email": value.email,
+        "firstName": value.name,
+        "lastName": value.surname,
+        "phone": value.phone
+      })
+    }).then((response) => {
+      this._onValueChange(STORAGE_KEY, value.email);
+      if(response.status == 200){
+         this.setState({
+          activity: false,
+          screen: ENTER_JOB,
+        });
+       }
+    }).catch((error) => {
+      console.log("error",error);
+    });
+    
+  }
+
+  loadUserType = (title) => {
+    this._onValueChange(STORAGE_KEY, 'test1@gmail.com');
+    console.log("type", title);
+    this.setState({
+      userType:title,
+      activity: false,
+      screen: ENTER_JOB,
+    });
+  }
+
+  async onPressSubmit() {
+     var DEMO_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
+     fetch('http://100.64.4.146:8080/job', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "email": value.email,
+        "firstName": value.name,
+        "lastName": value.surname,
+        "phone": value.phone
+      })
+    }).then((response) => {
+      this._onValueChange(STORAGE_KEY, value.email);
+      if(response.status == 200){
+         this.setState({
+          activity: false,
+          screen: ENTER_JOB,
+        });
+       }
+    }).catch((error) => {
+      console.log("error",error);
+    });
+     console.log("DEMO", DEMO_TOKEN);
+  }
+
+  async _onValueChange(item, selectedValue) {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
   }
 
   // This function is the main render function for the whole application.
@@ -78,22 +168,31 @@ export default class App extends React.Component {
 
 
     switch(screen) {
+      case ENTER_DRIVER_OR_USER:
+        return (
+            <View style={styles.container}>
+              <Text> I am a </Text>
+              <Button style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Customer')} title="Customer" color="#841584"/>
+              <Button style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Driver')} title="Driver" color="#841584"/>
+            </View>
+          )
+        break;
+
       case ENTER_JOB:
         return (
           <View style={styles.container}>
             <View style={styles.map}>
               <MyMap/>
             </View>
-            <View style={{flex: 3}}>
-              <Text>Other Components to go here</Text>
+            <View style={{flex: 3, flexDirection: 'row'}}>
+              <Tabs />
             </View>
           </View>
+
         );
         break;
 
       case ENTER_CODE:
-         // This is just to show how you don't have to have all your JSX in-line, but
-         // you can call other functions (even in other libraries!) that return JSX
         return(
         <KeyboardAvoidingView behavior={'padding'} style={[styles.centeredView, {backgroundColor: 'white', padding: 40}]}>
           <TextInput placeholder="Enter Code" keyboardType={'numeric'} maxLength={12} style={styles.phoneNumberInput} editable={!this.state.activity}/>
@@ -102,15 +201,25 @@ export default class App extends React.Component {
         </KeyboardAvoidingView>
         );
         break;
+
+      case MATCH_DRIVER:
+        return(
+          <View style={styles.container}>
+            <View>
+              <MatchDriver/>
+            </View>
+          </View>
+        );
+        break;
         
       case ENTER_PHONE:
       default:
         return (
-            <KeyboardAvoidingView behavior={'padding'} style={[styles.centeredView, {backgroundColor: 'white', padding: 40}]}>
-              <TextInput placeholder="Enter Number" keyboardType={'numeric'} maxLength={12} style={styles.phoneNumberInput} editable={!this.state.activity}/>
-              <Button onPress={this.onPhoneNumber} title="Send Code" color="#841584" accessibilityLabel="Learn more about this purple button"/>
-              <ActivityIndicator animating={this.state.activity} size={'large'} style={{margin: 20}}/>
-            </KeyboardAvoidingView>
+          <View style={styles.container}>
+            {}           
+            <Form ref="form" type={User} options={options} />
+            <Button onPress={this.onPress} title="SEND CODE" color="#841584"></Button>
+          </View>
         );
     }
   }
@@ -123,11 +232,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection:'column',
+  },
+  buttonUser:{
+    marginTop: 100,
   },
   map: {
-    flex: 1,
+    flex:1 ,
     alignSelf: 'stretch',
-    backgroundColor: '#222'
+    backgroundColor: '#222',
+    height:200,
+    flexDirection: 'row',
   },
   centeredView: {
     flex:1,

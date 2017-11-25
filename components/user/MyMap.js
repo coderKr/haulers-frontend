@@ -22,14 +22,26 @@ const styles = StyleSheet.create({
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeInterval:1, maximumAge:1};
 
 export default class MyMap extends React.Component {
-  state = {errorMsg:null, locationResult: null};
+  //state = {errorMsg:null, locationResult: null};
   constructor(props){
     super(props);
     this.state = {locationResult: null, errorMsg:null}
+    //this.locationChanged();
+  }
+
+  getInitialState() {
+    return {
+    locationResult: {
+      latitude: 37.78825,
+      longitude: -122.4324,
+      latitudeDelta: 0.04,
+      longitudeDelta: 0.05,
+    },
+    };
   }
   
-  componentWillMount(){
-    //Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged);
+  componentDidMount(){
+    //Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged)
     this.locationChanged();
   }
 
@@ -46,34 +58,44 @@ export default class MyMap extends React.Component {
     region = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
-      latitudeDelta: 0.1,
-      longitudeDelta: 0.05,
+      latitudeDelta: 0.04,
+      longitudeDelta: 0.05
     },
-    this.setState({locationResult:region})
+    this.setState({locationResult:region});
   }
+  }
+
+  onRegionChange(region){
+    if(region && region.latitude != 0){
+      region = {
+        latitude: region.latitude,
+        longitude: region.longitude,
+        latitudeDelta: 0.04,
+        longitudeDelta: 0.05
+      }
+      this.setState({locationResult:region});
+    }
   }
 
   render() {
     // TODO: Get this from the Device GPS
     let [lat, lng] = [0, 0];
-    let text = ""
+    //let region = {latitude:0, longitude:0, latitudeDelta: 0.1, longitudeDelta: 0.05};
+    let text = "";
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
     } else if(this.state.locationResult){
       lat = this.state.locationResult.latitude;
       lng = this.state.locationResult.longitude;
     }
-    console.log("IS STATE", lat);
-    //let [lat, lng] = [40.755644, -73.956097];
+    console.log("IS STATE", this.state.locationResult);
 
     return (
       <View style={styles.wrapper}>
-        <Text>{text}</Text>
         <MapView
           style={styles.map}
-          customMapStyle={require('./gmap_style.json')}
           region={this.state.locationResult}
-        >
+          onRegionChange={this.onRegionChange.bind(this)}>
           <MapView.Circle center={{latitude: lat, longitude: lng}} radius={100} strokeWidth={10} strokeColor={'rgba(200, 200, 255, .4)'}/>
         </MapView>
       </View>
