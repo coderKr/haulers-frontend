@@ -1,5 +1,5 @@
 import React from 'react';
-import {AsyncStorage, Alert, DatePickerAndroid, TimePickerAndroid, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
+import {FlatList, AsyncStorage, Alert, DatePickerAndroid, TimePickerAndroid, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 import MatchDriver from './MatchedDriver';
@@ -13,6 +13,7 @@ var STORAGE_KEY = 'id_token';
 const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
 
 var Form = t.form.Form;
+var DEMO_TOKEN = "";
 
 var JobInfo = t.struct({
   capacity: t.Number,              // a required string
@@ -78,6 +79,7 @@ const options = {
 // Possible Screen States (JS doesn't have Enum's)
 const DRIVER_INFO= 'di';
 const JOB_INFO = 'ji';
+const listData = {}
 
 export default class Mover extends React.Component {
   constructor(props) {
@@ -85,13 +87,16 @@ export default class Mover extends React.Component {
     this.state = {
       activity: false,
       visible: false,
-      screen: JOB_INFO
+      screen: JOB_INFO,
+      listdata:[]
     }
+    this.onPendingJobs();
   }
+
 
  async handleSubmit() {
      this.setState({visible:true});
-     var DEMO_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
+     DEMO_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
      console.log(DEMO_TOKEN);
      var value = this.refs.form.getValue();
      console.log(value);
@@ -128,8 +133,36 @@ export default class Mover extends React.Component {
     this.setState({screen:JOB_INFO});
   }
 
+  onPendingJobs = () => {
+     fetch('http://100.64.4.146:8080/job/all', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    }).then((response) => {
+      data = JSON.parse(response._bodyText);
+      this.setState({listdata:data});
+    });
+  }
+
+  renderRow = ({item}) => {
+  const status = `${item.status}`;
+  const description = `${item.description}`;
+ 
+  let actualRowComponent =
+      <View style={styles.row}>
+        <View style={styles.row_cell}>
+        <Text style={styles.row_value_status}>{status}</Text>
+        <Text style={styles.row_value_description}>{description}</Text>
+      </View>
+      </View>
+  return actualRowComponent
+}
+
   render() {
     const {screen} = this.state;
+    console.log("STATE", this.state.listdata);
     switch(screen) {
       case JOB_INFO:
         return(
@@ -145,8 +178,8 @@ export default class Mover extends React.Component {
               <Button onPress={this.handleSubmit.bind(this)} title="Submit" color="#841584"/>
             </Bar>
             <Bar title='Pending Jobs' collapsible={true} showOnStart={true} iconCollapsed='chevron-right' iconOpened='chevron-down'>
-              <View style={styles.content}>
-                <Text>Bacon ipsum dolor amet chuck turducken landjaeger tongue spare ribs</Text>
+              <View style={styles.v_container}>
+                <FlatList style={styles.containerTable} data={this.state.listdata} renderItem={this.renderRow} keyExtractor={item => item.start}/>
               </View>
             </Bar>
           </ScrollView>
@@ -178,6 +211,50 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingVertical: 2
   },
+  v_container: {
+      flex: 1,
+      padding: 8,
+      backgroundColor: 'white',
+      flexDirection: 'column', // main axis
+      alignItems: 'center', // cross axis
+    },
+  containerTable: {
+      marginTop: 14,
+      alignSelf: "stretch",
+    },
+    row: {
+      elevation: 1,
+      borderRadius: 2,
+      backgroundColor: '#FFFFF0',
+      flex: 1,
+      flexDirection: 'row',  // main axis
+      justifyContent: 'flex-start', // main axis
+      alignItems: 'center', // cross axis
+      paddingTop: 10,
+      paddingBottom: 10,
+      paddingLeft: 18,
+      paddingRight: 16,
+      marginLeft: 14,
+      marginRight: 14,
+      marginTop: 0,
+      marginBottom: 6,
+    },
+    row_cell: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    row_value_status:{
+      color: 'red',
+      textAlignVertical: 'top',
+      includeFontPadding: false,
+      flex: 1,
+    },
+     row_value_description:{
+      color: 'black',
+      textAlignVertical: 'top',
+      includeFontPadding: false,
+      flex: 1,
+    },
 });
 
 

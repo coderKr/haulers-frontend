@@ -28,6 +28,7 @@ export default class MyMap extends React.Component {
     this.state = {locationResult: null, errorMsg:null}
     //this.locationChanged();
     this.onRegionChange = this.onRegionChange.bind(this);
+    this.render();
   }
 
   getInitialState() {
@@ -47,9 +48,7 @@ export default class MyMap extends React.Component {
   }
 
   locationChanged = async() => {
-    console.log("CALLED")
     let { status } = await Permissions.getAsync(Permissions.LOCATION);
-    console.log("STATUS",status)
     if (!status || status !== 'granted') {
       this.setState({
         errorMsg: 'Permission to access location was denied',
@@ -73,7 +72,7 @@ export default class MyMap extends React.Component {
         longitude: region.longitude,
         latitudeDelta: 0.04,
         longitudeDelta: 0.05
-      }
+      };
       this.setState({locationResult:region});
     }
   }

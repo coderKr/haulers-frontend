@@ -184,9 +184,13 @@ export default class App extends React.Component {
     switch(screen) {
       case ENTER_DRIVER_OR_USER:
         return (
-            <View style={styles.container}>
-              <Text> I am a </Text>
+            <View style={styles.container1}>
+            <View>
+              <Text style={styles.forText}> I am a </Text>
+            </View>
+              <Text ></Text>
               <Button style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Customer')} title="Customer" color="#841584"/>
+              <Text ></Text>
               <Button style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Driver')} title="Driver" color="#841584"/>
             </View>
           )
@@ -242,6 +246,20 @@ export default class App extends React.Component {
 
 
 const styles = StyleSheet.create({
+  mainContainer:{
+    backgroundColor: '#eee',
+    alignItems: 'stretch',
+    padding:10,
+    marginTop:300,
+
+  },
+  container1:{
+    flex: 1,
+    backgroundColor: '#eee',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    flexDirection:'column'
+  },
   container: {
     flex: 1,
     backgroundColor: '#eee',
@@ -250,7 +268,15 @@ const styles = StyleSheet.create({
     flexDirection:'column',
   },
   buttonUser:{
-    margin: 20,
+    flex: 1,
+    marginTop: 5,
+    padding:5,
+    width:200,
+  },
+  forText:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   map: {
     flex:1 ,
