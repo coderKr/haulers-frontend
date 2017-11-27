@@ -28,7 +28,7 @@ export default class MyMap extends React.Component {
     this.state = {locationResult: null, errorMsg:null}
     //this.locationChanged();
     this.onRegionChange = this.onRegionChange.bind(this);
-    this.render();
+    //this.render();
   }
 
   getInitialState() {
@@ -43,7 +43,7 @@ export default class MyMap extends React.Component {
   }
   
   componentDidMount(){
-    //Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged)
+    Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged)
     this.locationChanged();
   }
 

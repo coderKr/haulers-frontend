@@ -80,9 +80,6 @@ export default class App extends React.Component {
 
    onPress = () => {
     var value = this.refs.form.getValue();
-    // if (value) { // if validation fails, value will be null
-    //   console.log(value); // value here is an instance of Person
-    // }
     console.log(value.email);
     fetch('http://100.64.4.146:8080/customer', {
       method: 'POST',
@@ -116,7 +113,7 @@ export default class App extends React.Component {
     this.setState({
       userType:title,
       activity: false,
-      screen: ENTER_JOB,
+      screen: ENTER_PHONE,
     });
   }
 
@@ -206,7 +203,6 @@ export default class App extends React.Component {
               <Tabs screenProps={this.goToDriverInfo}/>
             </View>
           </View>
-
         );
         break;
 
