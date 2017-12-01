@@ -75,10 +75,6 @@ const options = {
   }
 };
 
-
-// Possible Screen States (JS doesn't have Enum's)
-const DRIVER_INFO= 'di';
-const JOB_INFO = 'ji';
 const listData = {}
 
 export default class Mover extends React.Component {
@@ -87,7 +83,6 @@ export default class Mover extends React.Component {
     this.state = {
       activity: false,
       visible: false,
-      screen: JOB_INFO,
       listdata:[]
     }
     this.onPendingJobs();
@@ -110,8 +105,7 @@ export default class Mover extends React.Component {
     }).then((response) => {
       console.log(response);
       if(response.status == 200){
-        console.log("SUCCESS");
-        this.setState({visible:false, screen:DRIVER_INFO});
+        this.props.screenProps();
        } else {
         Alert.alert(
           "No Driver Available!","",
@@ -119,9 +113,7 @@ export default class Mover extends React.Component {
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
           ]
           )
-        this.setState({visible:false, screen:DRIVER_INFO});
-        console.log(this.props.screenProps);
-        this.props.screenProps();
+        this.setState({visible:false});
        }
     }).catch((error) => {
       console.log("error",error);
@@ -129,9 +121,6 @@ export default class Mover extends React.Component {
      console.log("DEMO", DEMO_TOKEN);
   }
 
-  goback = () => {
-    this.setState({screen:JOB_INFO});
-  }
 
   onPendingJobs = () => {
      fetch('http://100.64.4.146:8080/job/all', {
@@ -161,11 +150,7 @@ export default class Mover extends React.Component {
 }
 
   render() {
-    const {screen} = this.state;
-    console.log("STATE", this.state.listdata);
-    switch(screen) {
-      case JOB_INFO:
-        return(
+    return(
           <ScrollView contentContainerStyle={styles.contentContainer}>
             <Bar title='Post a new job' collapsible={true} showOnStart={true} iconCollapsed='chevron-right' iconOpened='chevron-down'>
               <View style={styles.container}>
@@ -184,19 +169,7 @@ export default class Mover extends React.Component {
             </Bar>
           </ScrollView>
           )
-        break;
-
-      case DRIVER_INFO:
-        default:
-          return(
-            <View style={styles.container}>
-              <View>
-                <MatchDriver/>
-              </View>
-              <Button onPress={this.goback.bind(this)} title="Go Back" color="#841584"/>
-            </View>
-            );
-    }}
+     }
 }
 
 

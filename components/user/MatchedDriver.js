@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, Activit
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Icon } from 'react-native-elements';
 
-export default class MatchedDriver extends React.Component {
+export default class MatchedDriverScreen extends React.Component {
   constructor(props) {
     super(props);      
     this.state = {

@@ -19,84 +19,84 @@ const styles = StyleSheet.create({
   },
 });
 
-const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeInterval:1, maximumAge:1};
+const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
 export default class MyMap extends React.Component {
-  //state = {errorMsg:null, locationResult: null};
+  state = {errorMsg:null, location: { coords: {latitude: 0, longitude: 0}}};
   constructor(props){
     super(props);
-    this.state = {locationResult: null, errorMsg:null}
-    //this.locationChanged();
-    this.onRegionChange = this.onRegionChange.bind(this);
-    //this.render();
-  }
-
-  getInitialState() {
-    return {
-    locationResult: {
-      latitude: 37.78825,
-      longitude: -122.4324,
-      latitudeDelta: 0.04,
-      longitudeDelta: 0.05,
-    },
-    };
   }
   
-  componentDidMount(){
-    Location.watchPositionAsync(GEOLOCATION_OPTIONS, this.locationChanged)
-    this.locationChanged();
+  componentWillMount(){
+    this._getPosition();
   }
 
-  locationChanged = async() => {
-    let { status } = await Permissions.getAsync(Permissions.LOCATION);
-    if (!status || status !== 'granted') {
-      this.setState({
-        errorMsg: 'Permission to access location was denied',
+  onDragEnd = (e) =>{
+    console.log(e);
+  }
+
+  onRegionChange = (region) => {
+    locationChanged = { coords:{
+      latitude:region.latitude,
+      longitude:region.longitude
+    }
+   }
+    this.setState({region:region, location: locationChanged});
+    this.props.screenProps(region);
+  }
+
+  async _getPosition(){
+    const {status} = await Permissions.askAsync(Permissions.LOCATION);
+    if (status === 'granted') {
+      Location.getCurrentPositionAsync(GEOLOCATION_OPTIONS).then((location) => {
+        this.locationChanged(location);
+        this.map.animateToRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }, 200)
+      }).catch((e) => {
+         alert(e + ' Please make sure your location (GPS) is turned on.');
       });
     } else {
-    let location = await Location.getCurrentPositionAsync({});
-    region = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      latitudeDelta: 0.04,
-      longitudeDelta: 0.05
-    },
-    this.setState({locationResult:region});
-  }
-  }
-
-  onRegionChange(region){
-    if(region && region.latitude != 0){
-      region = {
-        latitude: region.latitude,
-        longitude: region.longitude,
-        latitudeDelta: 0.04,
-        longitudeDelta: 0.05
-      };
-      this.setState({locationResult:region});
+      throw new Error('Location permission not granted');
     }
   }
 
+  locationChanged = (location) => {
+    region = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.05
+    };
+    console.log(this.state.location);
+    this.setState({location, region});
+  }
+
+ 
   render() {
-    // TODO: Get this from the Device GPS
     let [lat, lng] = [0, 0];
     //let region = {latitude:0, longitude:0, latitudeDelta: 0.1, longitudeDelta: 0.05};
     let text = "";
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
-    } else if(this.state.locationResult){
-      lat = this.state.locationResult.latitude;
-      lng = this.state.locationResult.longitude;
+    } else if(this.state.location){
+      lat = this.state.location.coords.latitude;
+      lng = this.state.location.coords.longitude;
     }
-    console.log("IS STATE", this.state.locationResult);
-
     return (
       <View style={styles.wrapper}>
         <MapView
+          ref={ref => { this.map = ref; }}
           style={styles.map}
-          region={this.state.locationResult}
+          region={this.state.region}
+          showUserLocation = {true}
           onRegionChange={this.onRegionChange}>
           <MapView.Circle center={{latitude: lat, longitude: lng}} radius={100} strokeWidth={10} strokeColor={'rgba(200, 200, 255, .4)'}/>
+          <MapView.Marker draggable
+            coordinate={this.state.location.coords}/>
         </MapView>
       </View>
     );
