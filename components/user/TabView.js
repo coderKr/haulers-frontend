@@ -20,16 +20,16 @@ export const Tabs = TabNavigator({
   Mover: {
     screen: Mover,
     navigationOptions: {
-      tabBarLabel: 'Mover',
+      tabBarLabel: 'New Job',
       tabBarIcon: ({ tintColor }) => <Icon name="list" size={35} color={tintColor} />
     },
   },
   Hauler: {
     screen: Hauler,
     navigationOptions: {
-      tabBarLabel: 'Hauler',
-      tabBarIcon: ({ tintColor }) => <Icon name="list" size={35} color={tintColor} />
-    },
+      tabBarLabel: 'Old Jobs',
+      tabBarIcon: ({ tintColor }) => <Icon name="list" size={35} color={tintColor} />,
   },
+}
 
-});
+}, {lazy:true});

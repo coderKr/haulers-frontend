@@ -5,13 +5,18 @@ import Bar from 'react-native-bar-collapsible';
 const t = require('tcomb-form-native');
 var Form = t.form.Form;
 var User = t.struct({
-  name: t.String,              // a required string
-  surname: t.maybe(t.String),  // an optional string
-  email: t.String,              
-  phone: t.Number        // a boolean
+  username: t.String,              // a required string
+  password: t.String,  // an optional string
 });
-var options = {};
-var STORAGE_KEY = 'id_token';
+var options = {
+    fields:{
+   password: {
+    password: true,
+    secureTextEntry: true
+  }
+}
+};
+var STORAGE_KEY = 'USER_TOKEN';
 
 
 export default class LoginUserScreen extends React.Component{
@@ -30,16 +35,15 @@ export default class LoginUserScreen extends React.Component{
       },
       body: JSON.stringify({
         "email": value.email,
-        "firstName": value.name,
-        "lastName": value.surname,
-        "phone": value.phone
+        "password": value.password
       })
     }).then((response) => {
-      //this._onValueChange(STORAGE_KEY, value.email);
+      console.log(response);
+      this._onValueChange(STORAGE_KEY, response.header.token);
       console.log(response);
       if(response.status == 200){
       	const { navigate } = this.props.navigation;
-    	navigate('UserInterface');
+    	navigate('UserPostJobScreen');
        }
     }).catch((error) => {
       console.log("error",error);
@@ -61,7 +65,7 @@ export default class LoginUserScreen extends React.Component{
           <View style={styles.container}>
             {}           
             <Form ref="form" type={User} options={options} />
-            <Button onPress={this.onPress} title="SEND CODE" color="#841584"></Button>
+            <Button onPress={this.onPress} title="SIGN IN" color="#841584"></Button>
           </View>
 		);
 	}

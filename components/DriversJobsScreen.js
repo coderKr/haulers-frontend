@@ -3,7 +3,7 @@ import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } fr
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 const t = require('tcomb-form-native');
-import MyMap from './user/MyMap';
+import MyMap from './driver/MyMap';
 var Form = t.form.Form;
 var User = t.struct({
   name: t.String,              // a required string
@@ -16,7 +16,7 @@ var options = {};
 var STORAGE_KEY = 'id_token';
 
 
-export default class DriverInterfaceScreen extends React.Component{
+export default class DriversJobsScreen extends React.Component{
   constructor(props){
     super(props);
     this.state = {latitude:0, longitude: 0};
@@ -47,7 +47,7 @@ export default class DriverInterfaceScreen extends React.Component{
       console.log(response);
       if(response.status == 200){
       	const { navigate } = this.props.navigation;
-    	navigate('UserInterface');
+    	navigate('UserPostJobScreen');
        }
     }).catch((error) => {
       console.log("error",error);

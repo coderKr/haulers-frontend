@@ -14,13 +14,19 @@ export default class CustomerDriverScreen extends React.Component{
 	}
 
 
-	loadUserType = (title) => {
-    	//this._onValueChange(STORAGE_KEY, 'test1@gmail.com');
+	async loadUserType(title) {
       const { navigate } = this.props.navigation;
       if(title == 'Customer') {
-    	 navigate('LoginUser');
+        //navigate('MatchedDriver',{driverInfo:{phone:'222',email:'heyhey',description:'jffhj', rating:'5', firstName:'David', location:{latitude:0,longitude:0}}});
+        var DEMO_TOKEN = await AsyncStorage.getItem('USER_TOKEN');
+        console.log(DEMO_TOKEN);
+        if (DEMO_TOKEN){
+           navigate('UserPostJobScreen');
+        }else{
+          navigate('SignUpUserScreen');
+        }
       } else {
-        navigate('DriverInterfaceScreen');
+        navigate('DriversJobsScreen');
       }
   	}
 

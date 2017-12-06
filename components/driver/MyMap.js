@@ -97,6 +97,8 @@ export default class MyMap extends React.Component {
           <MapView.Circle center={{latitude: lat, longitude: lng}} radius={100} strokeWidth={10} strokeColor={'rgba(200, 200, 255, .4)'}/>
           <MapView.Marker draggable
             coordinate={this.state.location.coords}/>
+          <MapView.Marker draggable
+            coordinate={this.state.location.coords}/>
         </MapView>
       </View>
     );

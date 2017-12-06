@@ -1,13 +1,12 @@
 import React from 'react';
-import {FlatList, AsyncStorage, Alert, DatePickerAndroid, TimePickerAndroid, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
+import {FlatList, AsyncStorage, Alert, DatePickerAndroid, TimePickerAndroid, StyleSheet, Text, TextInput, View, Button, ScrollView,KeyboardAvoidingView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Bar from 'react-native-bar-collapsible';
 import MatchDriver from './MatchedDriver';
+import base64 from "base-64";
 const t = require('tcomb-form-native');
 var _ = require('lodash');
 var moment = require('moment');
 var STORAGE_KEY = 'id_token';
-
 
 
 const stylesheet = _.cloneDeep(t.form.Form.stylesheet);
@@ -83,29 +82,57 @@ export default class Mover extends React.Component {
     this.state = {
       activity: false,
       visible: false,
-      listdata:[]
+      listdata:[],
+      username:"",
+      authBase64:"",
     }
+    this.getToken();
     this.onPendingJobs();
   }
 
 
- async handleSubmit() {
+async getToken(){
+  var username = await AsyncStorage.getItem("username");
+  var password = await AsyncStorage.getItem("password");
+  var authBase64 = base64.encode(`${username}:${password}`);
+  this.setState({username:username, authBase64:authBase64});
+}
+
+ handleSubmit = () => {
      this.setState({visible:true});
-     DEMO_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
-     console.log(DEMO_TOKEN);
+     console.log(this.props.screenProps)
+     location = {
+      startLocation: {latitiude: this.props.screenProps.startLoc[0], longitude:this.props.screenProps.startLoc[1]},
+      endLocation: {latitiude: this.props.screenProps.endLoc[0], longitude:this.props.screenProps.endLoc[1]}
+     }
+  
      var value = this.refs.form.getValue();
-     console.log(value);
-     fetch('http://100.64.4.146:8080/job?userEmail=' + DEMO_TOKEN , {
+     console.log("VALUE", this.refs.form.getValue())
+     bodyValue = {
+      "rating": 0,
+      "startLocation": location.startLocation,
+      "endLocation": location.endLocation,
+      "capacity":value.capacity,
+      "description": value.description,
+      "end":value.end,
+      "start":value.start,
+      "price":value.price
+     }
+     console.log(bodyValue)
+     var arrStr = encodeURIComponent(JSON.stringify([0,0]));
+     fetch('http://100.64.4.146:8080/job?customerEmail=' + this.state.username, {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        Authorization: `Basic ${this.state.authBase64}`,
       },
-      body: JSON.stringify(value, "rating":0)
+      body: JSON.stringify(bodyValue)
     }).then((response) => {
+      //response = JSON.stringify(response)
       console.log(response);
       if(response.status == 200){
-        this.props.screenProps();
+        this.props.screenProps(response._bodyText);
        } else {
         Alert.alert(
           "No Driver Available!","",
@@ -115,12 +142,24 @@ export default class Mover extends React.Component {
           )
         this.setState({visible:false});
        }
+      console.log(response.headers.map["x-auth-token"])
+      this._onValueChange("USER_TOKEN", response.headers.map["x-auth-token"][0]);
+      this._onValueChange("BASE", this.state.authBase64);
     }).catch((error) => {
       console.log("error",error);
     });
      console.log("DEMO", DEMO_TOKEN);
   }
 
+   async _onValueChange(item, selectedValue) {
+    console.log("called async", item, selectedValue);
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+      console.log("one setting");
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
 
   onPendingJobs = () => {
      fetch('http://100.64.4.146:8080/job/all', {
@@ -152,21 +191,14 @@ export default class Mover extends React.Component {
   render() {
     return(
           <ScrollView contentContainerStyle={styles.contentContainer}>
-            <Bar title='Post a new job' collapsible={true} showOnStart={true} iconCollapsed='chevron-right' iconOpened='chevron-down'>
               <View style={styles.container}>
               {}           
               <Form ref="form" type={JobInfo} options={options} />
+               <Button onPress={this.handleSubmit} title="Submit" color="#841584"/>
               </View>
               <View style={{ flex: 1 }}>
                 <Spinner visible={this.state.visible} textContent={"Loading..."} textStyle={{color: '#FFF'}} />
               </View>
-              <Button onPress={this.handleSubmit.bind(this)} title="Submit" color="#841584"/>
-            </Bar>
-            <Bar title='Pending Jobs' collapsible={true} showOnStart={true} iconCollapsed='chevron-right' iconOpened='chevron-down'>
-              <View style={styles.v_container}>
-                <FlatList style={styles.containerTable} data={this.state.listdata} renderItem={this.renderRow} keyExtractor={item => item.start}/>
-              </View>
-            </Bar>
           </ScrollView>
           )
      }
