@@ -20,6 +20,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
     "base-64": "^0.1.0",
     "base64-js": "^1.2.1",
     "expo": "^22.0.0",
@@ -29,6 +30,7 @@
     "npm": "^5.5.1",
     "react": "16.0.0-beta.5",
     "react-native": "^0.47.2",
+    "react-native-animatable": "^1.2.4",
     "react-native-bar-collapsible": "^1.6.0",
     "react-native-collapsible": "^0.9.0",
     "react-native-elements": "^0.18.2",

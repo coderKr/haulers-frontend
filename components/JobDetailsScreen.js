@@ -3,8 +3,6 @@ import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } fr
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator } from 'react-navigation';
-import MyMap from './user/MyMapUser';
-import { Tabs }  from './user/TabView';
 var base64js = require('base64-js')
 
 export default class JobDetailsScreen extends React.Component{
@@ -12,11 +10,25 @@ export default class JobDetailsScreen extends React.Component{
     	super(props);
       this.state = {
         jobDetails: this.props.navigation.state.params.jobInfo,
+        acceptJob: this.props.navigation.state.params.acceptJob,
       }
+      console.log("ACCEPT JOB", this.state.acceptJob)
+      this.setUp();
     }
 
+  async setUp(){
+    var type = await AsyncStorage.getItem("TYPE");
+    console.log(type)
+    if(type == 'Driver'){
+      typeIsDriver = true;
+    }else {
+      typeIsDriver = false;
+    }
+    this.setState({typeIsDriver: typeIsDriver});
+  }
+
 	static navigationOptions = {
-		title: 'Welcome',
+		title: 'UberMover',
 	}
 
 
@@ -60,6 +72,8 @@ export default class JobDetailsScreen extends React.Component{
               <Text style={{width:200, alignSelf: 'center'}}> End Location: </Text>
               <Text style={{width:200, alignSelf: 'center'}}> {this.state.jobDetails.endLocation} </Text>
             </View>
+            {this.state.typeIsDriver && <Button onPress={this.state.acceptJob.bind(this,true)} title="Accept" color="#841584"/>}
+            {this.state.typeIsDriver && <Button onPress={this.state.acceptJob.bind(this,false)} title="Reject" color="#841584"/>}
       </View>
      </ScrollView>
 		);

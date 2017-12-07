@@ -76,7 +76,7 @@ const options = {
 
 const listData = {}
 
-export default class Mover extends React.Component {
+export default class PostNewJobTabView extends React.Component {
   constructor(props) {
     super(props);      
     this.state = {
@@ -87,15 +87,15 @@ export default class Mover extends React.Component {
       authBase64:"",
     }
     this.getToken();
-    this.onPendingJobs();
   }
 
 
 async getToken(){
   var username = await AsyncStorage.getItem("username");
   var password = await AsyncStorage.getItem("password");
+  var token = await AsyncStorage.getItem("USER_TOKEN");
   var authBase64 = base64.encode(`${username}:${password}`);
-  this.setState({username:username, authBase64:authBase64});
+  this.setState({username:username, authBase64:authBase64, token:token});
 }
 
  handleSubmit = () => {
@@ -119,32 +119,45 @@ async getToken(){
       "price":value.price
      }
      console.log(bodyValue)
-     var arrStr = encodeURIComponent(JSON.stringify([0,0]));
-     fetch('http://100.64.4.146:8080/job?customerEmail=' + this.state.username, {
-      method: 'POST',
-      headers: {
+     if(this.state.token){
+      headers ={
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         Authorization: `Basic ${this.state.authBase64}`,
-      },
+      }
+     } else {
+      headers ={
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-auth-token': this.state.token,
+      }
+     }
+     var arrStr = encodeURIComponent(JSON.stringify([0,0]));
+     fetch(global.SERVER_URL + '/job?customerEmail=' + this.state.username, {
+      method: 'POST',
+      headers: headers,
       body: JSON.stringify(bodyValue)
     }).then((response) => {
       //response = JSON.stringify(response)
+      //console.log("this",this.props.screenProps.driver());
       console.log(response);
       if(response.status == 200){
-        this.props.screenProps(response._bodyText);
+        console.log(this.props.screenProps);
+        this.props.screenProps.driver(JSON.parse(response._bodyText));
        } else {
         Alert.alert(
-          "No Driver Available!","",
+          "No Driver Available right now! We have added your request in pending jobs!","",
           [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
           ]
           )
-        this.setState({visible:false});
        }
-      console.log(response.headers.map["x-auth-token"])
+        this.setState({visible:false});
+       if(response.headers){
       this._onValueChange("USER_TOKEN", response.headers.map["x-auth-token"][0]);
       this._onValueChange("BASE", this.state.authBase64);
+    }
+      console.log(response.headers.map["x-auth-token"])
     }).catch((error) => {
       console.log("error",error);
     });
@@ -159,19 +172,6 @@ async getToken(){
     } catch (error) {
       console.log('AsyncStorage error: ' + error.message);
     }
-  }
-
-  onPendingJobs = () => {
-     fetch('http://100.64.4.146:8080/job/all', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then((response) => {
-      data = JSON.parse(response._bodyText);
-      this.setState({listdata:data});
-    });
   }
 
   renderRow = ({item}) => {

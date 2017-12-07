@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
-export default class MyMap extends React.Component {
-  state = {errorMsg:null, location: { coords: {latitude: 0, longitude: 0}}, start:{}, end:{}};
+export default class MapUser extends React.Component {
+  state = {errorMsg:null, location: { coords: {latitude: 0, longitude: 0}}, locationDest:{latitude:0, longitude:0}, start:{}, end:{}};
   constructor(props){
     super(props);
   }
@@ -33,10 +33,13 @@ export default class MyMap extends React.Component {
 
   onDragEndStart(e){
     console.log("here");
+    console.log(e.nativeEvent.coordinate);
     this.props.start(e.nativeEvent.coordinate);
+    
   }
 
   onDragEndDest(e){
+     console.log(e.nativeEvent.coordinate);
     this.props.end(e.nativeEvent.coordinate);
   }
 
@@ -47,8 +50,15 @@ export default class MyMap extends React.Component {
       longitude:region.longitude
     }
    }
+   
     this.setState({region:region, location: locationChanged});
     //this.props.screenProps(region);
+  }
+
+  onPressMarker = (e) => {
+  setTimeout(() => // sadly, we need timeout to make this command run in next cycle, after map updates.
+    this._markers[e.nativeEvent.id].showCallout()
+    , 0);
   }
 
   async _getPosition(){
@@ -78,7 +88,11 @@ export default class MyMap extends React.Component {
       longitudeDelta: 0.05
     };
     console.log(this.state.location);
-    this.setState({location, region});
+     newCoords = {
+      "latitude": region.latitude + 0.001,
+      "longitude": region.longitude+ 0.01
+    }
+    this.setState({location, region, locationDest:newCoords});
   }
 
  
@@ -92,6 +106,7 @@ export default class MyMap extends React.Component {
       lat = this.state.location.coords.latitude;
       lng = this.state.location.coords.longitude;
     }
+    //this.setState({coordsDest: { "latitude": this.state.location.coords.latitude + 0.5, "longitude": this.state.location.coords.longitude + 0.5}});
     return (
       <View style={styles.wrapper}>
         <MapView
@@ -101,11 +116,10 @@ export default class MyMap extends React.Component {
           showUserLocation = {true}
           onRegionChange={this.onRegionChange}
           >
-          <MapView.Circle  key={'i29'} center={{latitude: lat, longitude: lng}} radius={100} strokeWidth={10} strokeColor={'rgba(200, 200, 255, .4)'}/>
           <MapView.Marker onDragEnd={e => this.onDragEndStart(e)} draggable pinColor="blue" title={'You are here'}
-            coordinate={this.state.location.coords}/>
-          <MapView.Marker  onDragEnd={e => this.onDragEndDest(e)} key={'i291'} draggable title={'Dest'}
-            coordinate={this.state.location.coords}/>
+            coordinate={this.state.location.coords} onPress={e => this.onPressMarker}/>
+          <MapView.Marker  onDragEnd={e => this.onDragEndDest(e)} draggable key={'i291'} title={'Dest'}
+            coordinate={this.state.locationDest} onPress={e => this.onPressMarker}/>
         </MapView>
       </View>
     );

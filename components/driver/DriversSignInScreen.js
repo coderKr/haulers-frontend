@@ -3,6 +3,8 @@ import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } fr
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 const t = require('tcomb-form-native');
+import base64 from "base-64";
+
 var Form = t.form.Form;
 var User = t.struct({
   username: t.String,              // a required string
@@ -26,25 +28,36 @@ export default class LoginUserScreen extends React.Component{
 
 	onPress = () => {
     var value = this.refs.form.getValue();
-    console.log(value.email);
-    fetch('http://100.64.4.146:8080/customer', {
-      method: 'POST',
+    var authBase64 = base64.encode(`${value.username}:${value.password}`);
+    bodyValue = {
+      "rating": 0,
+      "startLocation": {},
+      "endLocation": {},
+      "capacity":0,
+      "description": "",
+      "end":"",
+      "start":"",
+      "price":0
+     }
+
+    fetch(global.SERVER_URL + '/job/customer?driverEmail=' + value.username + "&type=pending", {
+      method: 'GET',
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        "email": value.email,
-        "password": value.password
-      })
+        'Accept': 'application/json',
+        Authorization: `Basic ${authBase64}`,
+      }
     }).then((response) => {
       console.log(response);
-      this._onValueChange(STORAGE_KEY, response.header.token);
-      console.log(response);
-      if(response.status == 200){
-      	const { navigate } = this.props.navigation;
-    	navigate('UserPostJobScreen');
-       }
+       if(response.headers && response.status!=401){
+        const { navigate } = this.props.navigation;
+        navigate('DriverAllJobsScreen');
+      
+       this._onValueChange("DRIVER_TOKEN", response.headers.map["x-auth-token"][0]);
+       this._onValueChange("drivername", value.username);
+       this._onValueChange("DRIVER_BASE", this.state.authBase64);
+    }
+      console.log(response.headers.map["x-auth-token"])
     }).catch((error) => {
       console.log("error",error);
     });

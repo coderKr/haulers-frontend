@@ -17,6 +17,13 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject
   },
+
+  mapIcon:{
+    width:20,
+    height:20,
+    backgroundColor:'red',
+  }
+
 });
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
@@ -28,13 +35,11 @@ export default class MatchedDriverMap extends React.Component {
     console.log("here",this.state.location.coords);
      console.log(this.state.driverLocation);
      console.log("PRPS", this.props.driverLocation);
-
-        //this.setState({driverLocation: this.props.driverLocation})
   }
   
   componentWillMount(){
     this._getPosition();
-    //this.setState({driverLocation:this.props.driverLocation})
+    this.setState({driverLocation:{"latitude":this.props.driverLocation[0], "longitude":this.props.driverLocation[1]}})
   }
 
 
@@ -66,7 +71,7 @@ export default class MatchedDriverMap extends React.Component {
     };
     console.log(this.state.location);
     this.setState({location, region});
-    this.setState({driverLocation:this.state.driverLocation})
+    this.setState({driverLocation:{"latitude":this.props.driverLocation[0], "longitude":this.props.driverLocation[1]}})
   }
 
  
@@ -87,8 +92,8 @@ export default class MatchedDriverMap extends React.Component {
           region={this.state.region}
           showUserLocation = {true}
           >
-          <MapView.Marker image={require('../../assets/car-icon.png')} title={'DRiver'}
-            coordinate={this.state.driverLocation}/>
+          <MapView.Marker image={require('../../assets/car-icon.png')}  style={styles.mapIcon} title={'Driver'}
+            coordinate={this.state.location.coords}/>
         </MapView>
       </View>
     );

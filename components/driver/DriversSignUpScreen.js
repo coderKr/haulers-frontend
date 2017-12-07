@@ -1,35 +1,45 @@
 import React from 'react';
-import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
+import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, KeyboardAvoidingView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 const t = require('tcomb-form-native');
-import MyMap from './driver/MyMap';
+import { StackNavigator } from 'react-navigation';
+
+import MapDriver from './MapDriver';
 var Form = t.form.Form;
 var User = t.struct({
   name: t.String,              // a required string
   surname: t.maybe(t.String),  // an optional string
   email: t.String,              
   phone: t.Number,        // a boolean,
-
+  password: t.String,
 });
-var options = {};
-var STORAGE_KEY = 'id_token';
+var options = {fields:{
+   password: {
+    password: true,
+    secureTextEntry: true
+  }}};
+var STORAGE_KEY = 'DRIVER_TOKEN';
 
 
-export default class DriversJobsScreen extends React.Component{
+export default class DriversSignUpScreen extends React.Component{
   constructor(props){
     super(props);
     this.state = {latitude:0, longitude: 0};
   }
   
 	static navigationOptions = {
-		title: 'Welcome',
+		title: 'UberMover ',
 	}
+
+  goToSignIn = () => {
+      const { navigate } = this.props.navigation;
+      navigate('DriversSignInScreen');
+  }
 
 	onPress = () => {
     var value = this.refs.form.getValue();
-    console.log(value.email);
-    fetch('http://100.64.4.146:8080/driver', {
+    fetch(global.SERVER_URL + '/driver/signup?password=' + value.password , {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -40,15 +50,20 @@ export default class DriversJobsScreen extends React.Component{
         "firstName": value.name,
         "lastName": value.surname,
         "phone": value.phone,
-        "latitude":this.state.latitude
+        "location":[this.state.latitude, this.state.longitude]
       })
     }).then((response) => {
       //this._onValueChange(STORAGE_KEY, value.email);
+     
+
       console.log(response);
       if(response.status == 200){
+        console.log(this.props);
+        this._onValueChange("drivername", value.email);
+        this._onValueChange("driverpassword", value.password);
       	const { navigate } = this.props.navigation;
-    	navigate('UserPostJobScreen');
-       }
+    	  navigate('DriverAllJobsScreen');
+      }
     }).catch((error) => {
       console.log("error",error);
     });
@@ -58,8 +73,6 @@ export default class DriversJobsScreen extends React.Component{
   getCoordinates = (coordinates) => {
     console.log(coordinates);
     this.setState({latitude: coordinates.latitude, longitude: coordinates.longitude});
-    //console.log(this.refs.form.getValue());
-    //this.refs.form.getComponent('latitude').refs.input = coordinates.latitude; 
   }
 
    async _onValueChange(item, selectedValue) {
@@ -73,16 +86,17 @@ export default class DriversJobsScreen extends React.Component{
 
 	render(){
 		return(
-      <View style={styles.container}>
+      <KeyboardAvoidingView keyboardVerticalOffset={-30} behavior="position" style={styles.container}>
             <View style={styles.map}>
-              <MyMap screenProps={this.getCoordinates}/>
+              <MapDriver screenProps={this.getCoordinates}/>
             </View>
-          <View>
+          <ScrollView contentContainerStyle={styles.contentContainer}>
             {}           
             <Form ref="form" type={User} options={options} />
-            <Button onPress={this.onPress} title="SEND CODE" color="#841584"></Button>
-          </View>
-      </View>
+            <Button onPress={this.onPress} title="SIGN UP" color="#841584"></Button>
+            <Text style={{color: 'blue'}} onPress={this.goToSignIn}>Already a member</Text>
+          </ScrollView>
+      </KeyboardAvoidingView>
 		);
 	}
 } 
@@ -95,8 +109,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection:'column'
   },
+  contentContainer: {
+    paddingVertical: 2
+  },
   map: {
-    flex:1 ,
     alignSelf: 'stretch',
     backgroundColor: '#222',
     height:200,

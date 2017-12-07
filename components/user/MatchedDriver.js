@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator, Button, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Icon } from 'react-native-elements';
-import MatchedDriverMap from './showDriverMap';
+import MatchedDriverMap from './showMatchedDriverMap';
 import '../../config';
 
 export default class MatchedDriverScreen extends React.Component {

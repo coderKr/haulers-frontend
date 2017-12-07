@@ -4,8 +4,8 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 import { Icon } from 'react-native-elements';
 
-import Mover from './Mover';
-import Hauler from './Hauler';
+import PostNewJobTabView from './PostNewJobTabView';
+import AllJobsTabView from './AllJobsTabView';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,15 +17,15 @@ const styles = StyleSheet.create({
 });
 
 export const Tabs = TabNavigator({
-  Mover: {
-    screen: Mover,
+  PostNewJobTabView: {
+    screen: PostNewJobTabView,
     navigationOptions: {
       tabBarLabel: 'New Job',
       tabBarIcon: ({ tintColor }) => <Icon name="list" size={35} color={tintColor} />
     },
   },
-  Hauler: {
-    screen: Hauler,
+  AllJobsTabView: {
+    screen: AllJobsTabView,
     navigationOptions: {
       tabBarLabel: 'Old Jobs',
       tabBarIcon: ({ tintColor }) => <Icon name="list" size={35} color={tintColor} />,

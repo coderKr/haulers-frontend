@@ -3,19 +3,18 @@ import {AsyncStorage,FlatList, StyleSheet, Text, TextInput, View, KeyboardAvoidi
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator } from 'react-navigation';
 
-export default class Hauler extends React.Component {
+export default class AllJobsTabView extends React.Component {
   constructor(props) {
     super(props);      
     this.state = {
       activity: false,
       listdata:{},
-      pendingJobData: [{"id":1,"status":"pending", "description":"hey"}],
+      pendingJobData:{},
       oldJobData:{},
       showErrorPast:true,
       showErrorPending:true,
       refreshing: false,
     }
-    console.log("INSIDE HAULERS");
     this.setUp();
     this.loadPendingJobs();
     this.loadOldJobs();
@@ -32,22 +31,25 @@ export default class Hauler extends React.Component {
 
   async loadOldJobs(){
      await this.setUp();
-     console.log("I AM SENDINF THIS TOKEN", this.state.token)
      fetch(global.SERVER_URL + "/job/customer?customerEmail=" + this.state.username + "&type=past", {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        Authorization: `Basic ${this.state.authBase64}`,
+        'x-auth-token': this.state.token,
       }
-    }).then((response) => { return response.json();
+    }).then((response) => { console.log(response); return response.json();
     }).then((response) => {
+        console.log(response)
         if(response.length>0){
-          this.setState({pendingJobData:response._bodyText});
+          this.setState({pendingJobData:response});
            this.setState({showErrorPending:false});
+        } else {
+          this.setState({showErrorPending:true, refreshing:false});
         }
     }).catch((error) => {
       console.log("error",error);
+       this.setState({showErrorPending:true, refreshing:false});
     });
   }
 
@@ -59,21 +61,21 @@ export default class Hauler extends React.Component {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        Authorization: `Basic ${this.state.authBase64}`,
+        'x-auth-token': this.state.token,
       }
-    }).then((response) => { return response.json();
+    }).then((response) => { console.log(response); return response.json();
     }).then((response) => {
-        if(response.results.length>0){
-          this.setState({oldJobData:response._bodyText});
+        if(response.length>0){
+          this.setState({oldJobData:response});
            this.setState({showErrorPast:false});
         }
         if(response.error){
           console.log("here")
         }
-        this.setState({refreshing:false});
+        this.setState({refreshing:false, showErrorPast:true});
     }).catch((error) => {
       console.log("error",error);
-      this.setState({refreshing:false});
+      this.setState({refreshing:false, showErrorPast:true});
     });
   }
 

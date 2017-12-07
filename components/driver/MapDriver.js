@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 
 const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
 
-export default class MyMap extends React.Component {
+export default class MapDriver extends React.Component {
   state = {errorMsg:null, location: { coords: {latitude: 0, longitude: 0}}};
   constructor(props){
     super(props);

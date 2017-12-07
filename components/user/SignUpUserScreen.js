@@ -1,5 +1,5 @@
 import React from 'react';
-import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, KeyboardAvoidingView } from 'react-native';
+import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator } from 'react-navigation';
@@ -26,7 +26,7 @@ var STORAGE_KEY = 'user_token';
 
 export default class SignUpUserScreen extends React.Component{
 	static navigationOptions = {
-		title: 'Welcome',
+		title: 'UberMover',
 	}
 
 	onPress = () => {
@@ -44,17 +44,30 @@ export default class SignUpUserScreen extends React.Component{
         "phone": value.phone
       })
     }).then((response) => {
-      // this._onValueChange("username", value.email);
-      // this._onValueChange("password", value.password);
-      this._onValueChange("username", "kripa");
-      this._onValueChange("password", "kripa");
+      this._onValueChange("username", value.email);
+      this._onValueChange("password", value.password);
+      //this._onValueChange("username", "kripa");
+      //this._onValueChange("password", "kripa");
       console.log(response);
       if(response.status == 200 || response.status == 201){
       	const { navigate } = this.props.navigation;
     	  navigate('UserPostJobScreen');
+       } else {
+        Alert.alert(
+          "There is some problem with sign up!","",
+          [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+          ]
+          )
        }
     }).catch((error) => {
       console.log("error",error);
+      Alert.alert(
+          error,"",
+          [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+          ]
+          )
     });
     
   }
@@ -74,7 +87,7 @@ export default class SignUpUserScreen extends React.Component{
 
 	render(){
 		return(
-          <KeyboardAvoidingView keyboardVerticalOffset={15} behavior="position" style={styles.container}>
+          <KeyboardAvoidingView keyboardVerticalOffset={-50} behavior="padding" style={styles.container}>
             {}           
             <Form ref="form" type={User} options={options} />
             <Button onPress={this.onPress} title="SIGN UP" color="#841584"></Button>

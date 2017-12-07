@@ -5,14 +5,19 @@ import MapView from 'react-native-maps';
 import { Tabs }  from './components/user/TabView';
 import { StackNavigator } from 'react-navigation';
 import CustomerDriverScreen from './components/CustomerDriverScreen';
-import SignUpUserScreen from './components/SignUpUserScreen';
-import SignInUserScreen from './components/SignInUserScreen';
-import UserPostJobScreen from './components/UserPostJobScreen';
+import SignUpUserScreen from './components/user/SignUpUserScreen';
+import SignInUserScreen from './components/user/SignInUserScreen';
+import UserPostJobScreen from './components/user/UserPostJobScreen';
 import MatchedDriverScreen from './components/user/MatchedDriver';
-import DriversJobsScreen from './components/DriversJobsScreen';
+import DriversSignUpScreen from './components/driver/DriversSignUpScreen';
+import DriversSignInScreen from './components/driver/DriversSignInScreen';
 import JobDetailsScreen from './components/JobDetailsScreen';
 import LogOutScreen from './components/LogOutScreen';
+import DriverAllJobsScreen from './components/driver/DriverAllJobsScreen';
 import './config';
+
+XMLHttpRequest = GLOBAL.originalXMLHttpRequest ? 
+  GLOBAL.originalXMLHttpRequest : GLOBAL.XMLHttpRequest;
 
 var options = {};
 var STORAGE_KEY = 'user_token';
@@ -47,13 +52,15 @@ const UberApp = StackNavigator({
   UserPostJobScreen: {
     screen: UserPostJobScreen, 
     navigationOptions: ({ navigation }) => ({
-      title: 'Schedules',
+      title: 'UberMover',
       headerRight: <Icon name='close' type='evilicon' color='red' size={35} onPress={ () => navigation.navigate('LogOutScreen') } />
   })},
   MatchedDriver: {screen: MatchedDriverScreen},
-  DriversJobsScreen: {screen: DriversJobsScreen},
+  DriversSignUpScreen: {screen: DriversSignUpScreen},
+  DriversSignInScreen: {screen: DriversSignInScreen},
   JobDetailsScreen:{screen:JobDetailsScreen},
   LogOutScreen:{screen:LogOutScreen},
+  DriverAllJobsScreen:{screen:DriverAllJobsScreen},
 }, {
     transitionConfig: () => ({
         screenInterpolator: (props) => {
@@ -73,9 +80,6 @@ export default class App extends React.Component {
     }
   }
 
-  // This function gets called when someone finishes entering their number.
-  // It should probably get moved into a Component like
-  // PhoneVerification in PhoneVerification.js for example
   onPhoneNumber = (inputText) => {
 
     // We immediately indicate some activity is happening
@@ -106,43 +110,6 @@ export default class App extends React.Component {
   }
 
 
-  // async onPressSubmit() {
-  //    var DEMO_TOKEN = await AsyncStorage.getItem(STORAGE_KEY);
-  //    fetch('http://100.64.4.146:8080/job', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       "email": value.email,
-  //       "firstName": value.name,
-  //       "lastName": value.surname,
-  //       "phone": value.phone
-  //     })
-  //   }).then((response) => {
-  //     this._onValueChange(STORAGE_KEY, value.email);
-  //     if(response.status == 200){
-  //        this.setState({
-  //         activity: false,
-  //         screen: ENTER_JOB,
-  //       });
-  //      }
-  //   }).catch((error) => {
-  //     console.log("error",error);
-  //   });
-  //    console.log("DEMO", DEMO_TOKEN);
-  // }
-
-  // async _onValueChange(item, selectedValue) {
-  //   try {
-  //     await AsyncStorage.setItem(item, selectedValue);
-  //   } catch (error) {
-  //     console.log('AsyncStorage error: ' + error.message);
-  //   }
-  //}
-
-
   render() {
      return <UberApp />;
   }
@@ -150,62 +117,6 @@ export default class App extends React.Component {
 
 
 const styles = StyleSheet.create({
-  mainContainer:{
-    backgroundColor: '#eee',
-    alignItems: 'stretch',
-    padding:10,
-    marginTop:300,
-
-  },
-  container1:{
-    flex: 1,
-    backgroundColor: '#eee',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    flexDirection:'column'
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#eee',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection:'column',
-  },
-  buttonUser:{
-    flex: 1,
-    marginTop: 5,
-    padding:5,
-    width:200,
-  },
-  forText:{
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  map: {
-    flex:1 ,
-    alignSelf: 'stretch',
-    backgroundColor: '#222',
-    height:200,
-    flexDirection: 'row',
-  },
-  centeredView: {
-    flex:1,
-    alignItems:'stretch',
-    justifyContent:'center'
-  },
-
-  // Probably this style should get moved into a dedicated PhoneValidation component.
-  phoneNumberInput: {
-    marginTop: 20,
-    marginBottom:20,
-    fontSize: 20,
-    color: 'black',
-    textAlign: 'center',
-    lineHeight:20,
-    height:40,
-    backgroundColor: 'white'
-  }
 });
 
 

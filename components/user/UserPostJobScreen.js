@@ -3,8 +3,8 @@ import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } fr
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator } from 'react-navigation';
-import MyMap from './user/MyMapUser';
-import { Tabs }  from './user/TabView';
+import MapUser from './MapUser';
+import { Tabs }  from './TabView';
 var base64js = require('base64-js')
 
 export default class UserInterfaceScreen extends React.Component{
@@ -18,7 +18,7 @@ export default class UserInterfaceScreen extends React.Component{
 
 	goToDriverInfo = (driverInfo) => {
 		const { navigate } = this.props.navigation;
-    	navigate('MatchedDriver',{driverInfo: dr});
+    	navigate('MatchedDriver',{driverInfo: driverInfo});
   }
 
   goToJobDetails = (item) => {
@@ -38,7 +38,7 @@ export default class UserInterfaceScreen extends React.Component{
 		return(
           <View style={styles.container}>
             <View style={styles.map}>
-              <MyMap start={this.startLocation} end={this.endLocation}/>
+              <MapUser start={this.startLocation} end={this.endLocation}/>
             </View>
             <View style={{flex: 3, flexDirection: 'row'}}>
               <Tabs screenProps={{"driver":this.goToDriverInfo, "startLoc":this.state.startLoc, "endLoc": this.state.endLoc, "jobDetails":this.goToJobDetails}}/>

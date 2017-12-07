@@ -1,8 +1,9 @@
 import React from 'react';
-import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
+import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, TouchableOpacity } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator } from 'react-navigation';
+import * as Animatable from 'react-native-animatable';
 
 export default class CustomerDriverScreen extends React.Component{
 	constructor(props) {
@@ -10,25 +11,46 @@ export default class CustomerDriverScreen extends React.Component{
     }
 
 	static navigationOptions = {
-		title: 'Welcome',
+		title: 'UberMovers',
 	}
-
+  bounceOff =  (title) => {
+    if (title=="Customer") {
+     return this.refs.Customer.bounce(1000).then((endState) => console.log(endState.finished ? 'bounce finished' : 'bounce cancelled'));
+   } else {
+     return this.refs.Driver.bounce(1000).then((endState) => console.log(endState.finished ? 'bounce finished' : 'bounce cancelled'));
+   }
+  }
 
 	async loadUserType(title) {
+      await this.bounceOff(title);
+      console.log(title);
+      this._onValueChange("TYPE", title);
       const { navigate } = this.props.navigation;
       if(title == 'Customer') {
-        //navigate('MatchedDriver',{driverInfo:{phone:'222',email:'heyhey',description:'jffhj', rating:'5', firstName:'David', location:{latitude:0,longitude:0}}});
-        var DEMO_TOKEN = await AsyncStorage.getItem('USER_TOKEN');
-        console.log(DEMO_TOKEN);
-        if (DEMO_TOKEN){
+         var USER_TOKEN = await AsyncStorage.getItem('USER_TOKEN');
+         console.log("USER",USER_TOKEN)
+        if (USER_TOKEN){
            navigate('UserPostJobScreen');
         }else{
           navigate('SignUpUserScreen');
         }
       } else {
-        navigate('DriversJobsScreen');
+         var DRIVER_TOKEN = await AsyncStorage.getItem('DRIVER_TOKEN');
+         if (DRIVER_TOKEN){
+           navigate('DriverAllJobsScreen');
+        }else{
+          navigate('DriversSignUpScreen');
+        }
       }
   	}
+
+  async _onValueChange(item, selectedValue) {
+    try {
+      await AsyncStorage.setItem(item, selectedValue);
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
 
 	render(){
 		return(
@@ -37,9 +59,16 @@ export default class CustomerDriverScreen extends React.Component{
               <Text style={styles.forText}> I am a </Text>
             </View>
               <Text ></Text>
-              <Button style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Customer')} title="Customer" color="#841584"/>
-              <Text ></Text>
-              <Button style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Driver')} title="Driver" color="#841584"/>
+              <Animatable.View ref="Customer">
+              <TouchableOpacity style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Customer')}>
+                  <Text style={styles.buttonText}> Customer </Text>
+              </TouchableOpacity>
+              </Animatable.View>
+              <Animatable.View ref="Driver">
+                <TouchableOpacity style={styles.buttonUser} onPress={this.loadUserType.bind(this,'Driver')}>
+                  <Text style={styles.buttonText}> Driver </Text>
+              </TouchableOpacity>
+              </Animatable.View>
             </View>
 		);
 	}
@@ -49,19 +78,25 @@ const styles = StyleSheet.create({
   container:{
     flex: 1,
     backgroundColor: '#eee',
-    alignItems: 'stretch',
+    alignItems: 'center',
     justifyContent: 'center',
     flexDirection:'column'
   },
   buttonUser:{
-    flex: 1,
-    marginTop: 5,
     padding:5,
-    width:200,
+    backgroundColor: '#FFD700',
+    margin:5,
+    width:300,
   },
   forText:{
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  buttonText:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color:'white'
   }
 });
