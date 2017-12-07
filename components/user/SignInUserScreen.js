@@ -50,12 +50,11 @@ export default class LoginUserScreen extends React.Component{
     }).then((response) => {
       console.log(response);
        if(response.headers && response.status!=401){
+        this._onValueChange("USER_TOKEN", response.headers.map["x-auth-token"][0]);
+        this._onValueChange("username", value.username);
+        this._onValueChange("BASE", authBase64);
         const { navigate } = this.props.navigation;
         navigate('UserPostJobScreen');
-      
-       this._onValueChange("USER_TOKEN", response.headers.map["x-auth-token"][0]);
-       this._onValueChange("username", value.username);
-       this._onValueChange("BASE", this.state.authBase64);
     } else {
        Alert.alert(
           "Invalid User!","",

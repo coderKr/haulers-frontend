@@ -1,8 +1,16 @@
 import React from 'react';
 import {AsyncStorage,FlatList, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator, Button, ScrollView,TouchableOpacity, RefreshControl} from 'react-native';
 import Bar from 'react-native-bar-collapsible';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, NavigationActions } from 'react-navigation';
 import base64 from "base-64";
+
+// const resetAction = NavigationActions.reset({
+//   index: 0,
+//   actions: [
+//     NavigationActions.navigate({ routeName: 'DriverAllJobsScreen'})
+//   ]
+// })
+
 
 export default class DriverAllJobsScreen extends React.Component {
   constructor(props) {
@@ -19,6 +27,7 @@ export default class DriverAllJobsScreen extends React.Component {
     this.setUp();
     this.loadPendingJobs();
     this.loadOldJobs();
+
   }
 
 

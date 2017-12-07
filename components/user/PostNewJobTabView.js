@@ -92,8 +92,10 @@ export default class PostNewJobTabView extends React.Component {
 
 async getToken(){
   var username = await AsyncStorage.getItem("username");
+  console.log("USERNAME", username)
   var password = await AsyncStorage.getItem("password");
   var token = await AsyncStorage.getItem("USER_TOKEN");
+  console.log("TOKEN", token)
   var authBase64 = base64.encode(`${username}:${password}`);
   this.setState({username:username, authBase64:authBase64, token:token});
 }
@@ -119,7 +121,7 @@ async getToken(){
       "price":value.price
      }
      console.log(bodyValue)
-     if(this.state.token){
+     if(!this.state.token){
       headers ={
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -132,6 +134,7 @@ async getToken(){
         'x-auth-token': this.state.token,
       }
      }
+     console.log("HEADERS", headers)
      var arrStr = encodeURIComponent(JSON.stringify([0,0]));
      fetch(global.SERVER_URL + '/job?customerEmail=' + this.state.username, {
       method: 'POST',
