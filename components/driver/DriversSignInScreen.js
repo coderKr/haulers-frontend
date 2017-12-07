@@ -50,12 +50,11 @@ export default class LoginUserScreen extends React.Component{
     }).then((response) => {
       console.log(response);
        if(response.headers && response.status!=401){
+        this._onValueChange("DRIVER_TOKEN", response.headers.map["x-auth-token"][0]);
+        this._onValueChange("drivername", value.username);
+        this._onValueChange("DRIVER_BASE", this.state.authBase64);
         const { navigate } = this.props.navigation;
         navigate('DriverAllJobsScreen');
-      
-       this._onValueChange("DRIVER_TOKEN", response.headers.map["x-auth-token"][0]);
-       this._onValueChange("drivername", value.username);
-       this._onValueChange("DRIVER_BASE", this.state.authBase64);
     }
       console.log(response.headers.map["x-auth-token"])
     }).catch((error) => {

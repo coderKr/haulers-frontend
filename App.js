@@ -14,6 +14,7 @@ import DriversSignInScreen from './components/driver/DriversSignInScreen';
 import JobDetailsScreen from './components/JobDetailsScreen';
 import LogOutScreen from './components/LogOutScreen';
 import DriverAllJobsScreen from './components/driver/DriverAllJobsScreen';
+import { NavigationActions } from 'react-navigation'
 import './config';
 
 XMLHttpRequest = GLOBAL.originalXMLHttpRequest ? 
@@ -60,7 +61,10 @@ const UberApp = StackNavigator({
   DriversSignInScreen: {screen: DriversSignInScreen},
   JobDetailsScreen:{screen:JobDetailsScreen},
   LogOutScreen:{screen:LogOutScreen},
-  DriverAllJobsScreen:{screen:DriverAllJobsScreen},
+  DriverAllJobsScreen:{screen:DriverAllJobsScreen,navigationOptions: ({ navigation }) => ({
+      title: 'UberMover',
+      headerRight: <Icon name='close' type='evilicon' color='red' size={35} onPress={ () => navigation.navigate('LogOutScreen') } />
+  })},
 }, {
     transitionConfig: () => ({
         screenInterpolator: (props) => {

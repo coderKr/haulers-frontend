@@ -54,8 +54,6 @@ export default class DriversSignUpScreen extends React.Component{
       })
     }).then((response) => {
       //this._onValueChange(STORAGE_KEY, value.email);
-     
-
       console.log(response);
       if(response.status == 200){
         console.log(this.props);

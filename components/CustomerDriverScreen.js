@@ -2,7 +2,7 @@ import React from 'react';
 import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, TouchableOpacity } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, NavigationActions } from 'react-navigation';
 import * as Animatable from 'react-native-animatable';
 
 export default class CustomerDriverScreen extends React.Component{
@@ -41,6 +41,7 @@ export default class CustomerDriverScreen extends React.Component{
         }else{
           navigate('DriversSignUpScreen');
         }
+
       }
   	}
 

@@ -2,7 +2,7 @@ import React from 'react';
 import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, NavigationActions } from 'react-navigation';
 import MapUser from './MapUser';
 import { Tabs }  from './TabView';
 var base64js = require('base64-js')
