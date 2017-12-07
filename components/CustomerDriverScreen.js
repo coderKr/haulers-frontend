@@ -1,5 +1,5 @@
 import React from 'react';
-import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, TouchableOpacity } from 'react-native';
+import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, TouchableOpacity, Image } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator } from 'react-navigation';
@@ -55,6 +55,18 @@ export default class CustomerDriverScreen extends React.Component{
 	render(){
 		return(
 			<View style={styles.container}>
+			<Image
+		        style={{
+		          backgroundColor: 'pink',
+		          flex: 1,
+		          // resizeMode,
+		          position: 'absolute',
+		          width: '100%',
+		          height: '100%',
+		          justifyContent: 'center',
+		        }}
+		        source={{ uri: 'https://www.printelf.com/designer/images/bcard/1088x638/background/000-22.jpg' }}
+		      />
             <View>
               <Text style={styles.forText}> I am a </Text>
             </View>
@@ -72,7 +84,7 @@ export default class CustomerDriverScreen extends React.Component{
             </View>
 		);
 	}
-} 
+}
 
 const styles = StyleSheet.create({
   container:{
@@ -83,20 +95,23 @@ const styles = StyleSheet.create({
     flexDirection:'column'
   },
   buttonUser:{
-    padding:5,
-    backgroundColor: '#FFD700',
+    padding:2,
+    backgroundColor: '#222233',
     margin:5,
+	height:100,
     width:300,
   },
   forText:{
-    fontSize: 20,
+    fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
+	color:'#D7D7E0',
   },
   buttonText:{
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'white'
+    color:'#D7D7E0',
+	top:23
   }
 });
