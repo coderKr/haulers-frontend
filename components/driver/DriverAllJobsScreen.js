@@ -1,5 +1,5 @@
 import React from 'react';
-import {AsyncStorage,FlatList, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator, Button, ScrollView,TouchableOpacity, RefreshControl} from 'react-native';
+import {Alert, AsyncStorage,FlatList, StyleSheet, Text, TextInput, View, KeyboardAvoidingView, Image, ActivityIndicator, Button, ScrollView,TouchableOpacity, RefreshControl} from 'react-native';
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 import base64 from "base-64";
@@ -63,6 +63,10 @@ export default class DriverAllJobsScreen extends React.Component {
         if(response.length>0){
           this.setState({pendingJobData:response});
            this.setState({showErrorPending:false});
+
+        }
+        if(response.headers){
+          this._onValueChange("DRIVER_TOKEN", response.headers.map["x-auth-token"][0]);
         }
     }).catch((error) => {
       console.log("error",error);
@@ -95,11 +99,19 @@ export default class DriverAllJobsScreen extends React.Component {
     });
   }
 
-  acceptJob = (accepted) => {
-    console.log("reached",accepted);
+  acceptJob = () => {
+    Alert.alert(
+          "Driver Accepted!! Lets get stuff moved!","",
+          [
+          {text: 'Ok', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+          ]
+          )
+    const { navigate } = this.props.navigation;
+    navigate('DriverAllJobsScreen');
   }
 
   _onPress = (item) => {
+    console.log(item)
     const { navigate } = this.props.navigation;
     navigate('JobDetailsScreen',{jobInfo: item, acceptJob: this.acceptJob});
   }

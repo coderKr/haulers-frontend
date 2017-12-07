@@ -95,11 +95,9 @@ export default class MapDriver extends React.Component {
           showUserLocation = {true}
           onRegionChange={this.onRegionChange}>
           <MapView.Circle center={{latitude: lat, longitude: lng}} radius={100} strokeWidth={10} strokeColor={'rgba(200, 200, 255, .4)'}/>
-          <MapView.Marker draggable
-            coordinate={this.state.location.coords}/>
-          <MapView.Marker draggable
-            coordinate={this.state.location.coords}/>
-        </MapView>
+          <MapView.Marker coordinate={this.state.location.coords}/>
+          </MapView>
+
       </View>
     );
   }

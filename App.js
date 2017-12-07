@@ -46,6 +46,7 @@ logout = () => {
   console.log("REACHES LOGOUT");
 }
 
+
 const UberApp = StackNavigator({
   CustomerDriverScreen: { screen: CustomerDriverScreen },
   SignUpUserScreen: {screen: SignUpUserScreen},
@@ -54,7 +55,8 @@ const UberApp = StackNavigator({
     screen: UserPostJobScreen, 
     navigationOptions: ({ navigation }) => ({
       title: 'UberMover',
-      headerRight: <Icon name='close' type='evilicon' color='red' size={35} onPress={ () => navigation.navigate('LogOutScreen') } />
+      headerRight: <Icon name='close' type='evilicon' color='red' size={35} onPress={ () => navigation.navigate('LogOutScreen') } />,
+      headerLeft: null,
   })},
   MatchedDriver: {screen: MatchedDriverScreen},
   DriversSignUpScreen: {screen: DriversSignUpScreen},
@@ -63,7 +65,8 @@ const UberApp = StackNavigator({
   LogOutScreen:{screen:LogOutScreen},
   DriverAllJobsScreen:{screen:DriverAllJobsScreen,navigationOptions: ({ navigation }) => ({
       title: 'UberMover',
-      headerRight: <Icon name='close' type='evilicon' color='red' size={35} onPress={ () => navigation.navigate('LogOutScreen') } />
+      headerRight: <Icon name='close' type='evilicon' color='red' size={35} onPress={ () => navigation.navigate('LogOutScreen') } />,
+      headerLeft: null,
   })},
 }, {
     transitionConfig: () => ({

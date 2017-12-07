@@ -43,6 +43,9 @@ export default class AllJobsTabView extends React.Component {
         console.log(response)
         if(response.length>0){
           this.setState({pendingJobData:response});
+          //const completedAssets = _.filter(response , { item.status: "COMPLETED"});
+          // console.log(completedAssets)
+           //this.oldJobData = completedAssets;
            this.setState({showErrorPending:false});
         } else {
           this.setState({showErrorPending:true, refreshing:false});
@@ -64,23 +67,26 @@ export default class AllJobsTabView extends React.Component {
         'x-auth-token': this.state.token,
       }
     }).then((response) => { console.log(response); return response.json();
-    }).then((response) => {
-        if(response.length>0){
-          this.setState({oldJobData:response});
-           this.setState({showErrorPast:false});
-        }
-        if(response.error){
-          console.log("here")
-        }
+    // }).then((response) => {
+    //     if(response.length>0){
+    //       //this.setState({oldJobData:response});
+    //        this.setState({showErrorPast:false});
+    //     } else {
         this.setState({refreshing:false, showErrorPast:true});
+      //}
     }).catch((error) => {
       console.log("error",error);
       this.setState({refreshing:false, showErrorPast:true});
     });
   }
 
-  _onPress = (item) => {
-    this.props.screenProps.jobDetails(item)
+  _onPress(item) {
+    console.log(item);
+    if(item.status == "MATCHED"){
+       this.props.screenProps.driver(item)
+    } else {
+      this.props.screenProps.jobDetails(item)
+    }
   }
 
   handleRefresh = () => {
@@ -99,7 +105,7 @@ export default class AllJobsTabView extends React.Component {
  
   let actualRowComponent =
      <TouchableOpacity onPress={this._onPress.bind(this, item)}>
-      <View style={styles.row}>
+      <View style={styles.row} >
           <View style={styles.row_cell}>
             <Text style={styles.row_value_status}>{status}</Text>
             <Text style={styles.row_value_description}>{description}</Text>

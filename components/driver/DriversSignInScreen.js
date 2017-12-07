@@ -29,6 +29,7 @@ export default class LoginUserScreen extends React.Component{
 	onPress = () => {
     var value = this.refs.form.getValue();
     var authBase64 = base64.encode(`${value.username}:${value.password}`);
+    console.log(authBase64)
     bodyValue = {
       "rating": 0,
       "startLocation": {},
@@ -52,7 +53,7 @@ export default class LoginUserScreen extends React.Component{
        if(response.headers && response.status!=401){
         this._onValueChange("DRIVER_TOKEN", response.headers.map["x-auth-token"][0]);
         this._onValueChange("drivername", value.username);
-        this._onValueChange("DRIVER_BASE", this.state.authBase64);
+        this._onValueChange("DRIVER_BASE", authBase64);
         const { navigate } = this.props.navigation;
         navigate('DriverAllJobsScreen');
     }

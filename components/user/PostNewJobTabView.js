@@ -146,15 +146,14 @@ async getToken(){
       console.log(response);
       if(response.status == 200){
         console.log(this.props.screenProps);
-        this.props.screenProps.driver(JSON.parse(response._bodyText));
-       } else {
+        //this.props.screenProps.driver(JSON.parse(response._bodyText));
+       } 
         Alert.alert(
-          "No Driver Available right now! We have added your request in pending jobs!","",
+          "DRIVER REQUESTED!","",
           [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+          {text: 'Cool', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
           ]
           )
-       }
         this.setState({visible:false});
        if(response.headers){
       this._onValueChange("USER_TOKEN", response.headers.map["x-auth-token"][0]);
@@ -177,19 +176,6 @@ async getToken(){
     }
   }
 
-  renderRow = ({item}) => {
-  const status = `${item.status}`;
-  const description = `${item.description}`;
- 
-  let actualRowComponent =
-      <View style={styles.row}>
-        <View style={styles.row_cell}>
-        <Text style={styles.row_value_status}>{status}</Text>
-        <Text style={styles.row_value_description}>{description}</Text>
-      </View>
-      </View>
-  return actualRowComponent
-}
 
   render() {
     return(
