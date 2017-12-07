@@ -46,7 +46,7 @@ export default class UserInterfaceScreen extends React.Component{
           </View>
 		);
 	}
-} 
+}
 
 const styles = StyleSheet.create({
   container:{
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   centeredView: {
     flex:1,
     alignItems:'stretch',
-    justifyContent:'center'
+    justifyContent:'center',
+
   },
 });
