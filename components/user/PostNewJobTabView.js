@@ -102,10 +102,10 @@ async getToken(){
      this.setState({visible:true});
      console.log(this.props.screenProps)
      location = {
-      startLocation: {latitiude: this.props.screenProps.startLoc[0], longitude:this.props.screenProps.startLoc[1]},
-      endLocation: {latitiude: this.props.screenProps.endLoc[0], longitude:this.props.screenProps.endLoc[1]}
+      startLocation: {latitude: this.props.screenProps.startLoc[0], longitude:this.props.screenProps.startLoc[1]},
+      endLocation: {latitude: this.props.screenProps.endLoc[0], longitude:this.props.screenProps.endLoc[1]}
      }
-  
+     console.log("AUTH0", this.state.authBase64);
      var value = this.refs.form.getValue();
      console.log("VALUE", this.refs.form.getValue())
      bodyValue = {

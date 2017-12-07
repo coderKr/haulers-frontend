@@ -86,7 +86,7 @@ export default class DriversSignUpScreen extends React.Component{
 
 	render(){
 		return(
-      <KeyboardAvoidingView keyboardVerticalOffset={-30} behavior="position" style={styles.container}>
+      <View style={styles.container}>
             <View style={styles.map}>
               <MapDriver screenProps={this.getCoordinates}/>
             </View>
@@ -96,7 +96,7 @@ export default class DriversSignUpScreen extends React.Component{
             <Button onPress={this.onPress} title="SIGN UP" color="#841584"></Button>
             <Text style={{color: 'blue'}} onPress={this.goToSignIn}>Already a member</Text>
           </ScrollView>
-      </KeyboardAvoidingView>
+      </View>
 		);
 	}
 } 

@@ -31,7 +31,7 @@ export default class SignUpUserScreen extends React.Component{
 
 	onPress = () => {
     var value = this.refs.form.getValue();
-    fetch(SERVER_URL + '/customer/signup?password='+value.password, {
+    fetch(global.SERVER_URL + '/customer/signup?password='+value.password, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

@@ -1,5 +1,5 @@
 import React from 'react';
-import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
+import {AsyncStorage, StyleSheet, Text, TextInput, View, Button, ScrollView, UIImagePickerManager } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Bar from 'react-native-bar-collapsible';
 import { StackNavigator } from 'react-navigation';
@@ -25,6 +25,41 @@ export default class JobDetailsScreen extends React.Component{
       typeIsDriver = false;
     }
     this.setState({typeIsDriver: typeIsDriver});
+  }
+
+  getImage = () => {
+    var options = {
+      title: 'Upload image',
+      cancelButtonTitle: 'Cancel',
+      takePhotoButtonTitle: 'Take Photo...',
+      chooseFromLibraryButtonTitle: 'Choose from Library...',
+      returnBase64Image: true,
+      returnIsVertical: false
+    };
+    UIImagePickerManager.showImagePicker(options, (type, response) => {
+      if (type !== 'cancel') {
+        var source;
+        if (type === 'data') { 
+          source = {uri: 'data:image/jpeg;base64,' + response, isStatic: true};
+        } else { 
+          source = {uri: response};
+        }
+
+        console.log("uploading image");
+
+         fetch('server-endpoint',{
+           method: 'post',
+           body: "data=" + encodeURIComponent(source.uri)
+         }).then(response => {
+           console.log("image uploaded")
+           console.log(response)
+         }).catch(console.log);
+
+        //this.setState({avatarSource:source});
+      } else {
+        console.log('Cancel');
+      }
+    });
   }
 
 	static navigationOptions = {
@@ -74,6 +109,7 @@ export default class JobDetailsScreen extends React.Component{
             </View>
             {this.state.typeIsDriver && <Button onPress={this.state.acceptJob.bind(this,true)} title="Accept" color="#841584"/>}
             {this.state.typeIsDriver && <Button onPress={this.state.acceptJob.bind(this,false)} title="Reject" color="#841584"/>}
+            <Button onPress={this.getImage.bind(this)} title="Take Selfie" color="#841584"/>
       </View>
      </ScrollView>
 		);
