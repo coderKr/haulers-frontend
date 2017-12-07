@@ -10,7 +10,7 @@ var Form = t.form.Form;
 var User = t.struct({
   name: t.String,              // a required string
   surname: t.maybe(t.String),  // an optional string
-  email: t.String,              
+  email: t.String,
   phone: t.Number,        // a boolean,
   password: t.String,
 });
@@ -27,7 +27,7 @@ export default class DriversSignUpScreen extends React.Component{
     super(props);
     this.state = {latitude:0, longitude: 0};
   }
-  
+
 	static navigationOptions = {
 		title: 'UberMover ',
 	}
@@ -65,7 +65,7 @@ export default class DriversSignUpScreen extends React.Component{
     }).catch((error) => {
       console.log("error",error);
     });
-    
+
   }
 
   getCoordinates = (coordinates) => {
@@ -89,15 +89,15 @@ export default class DriversSignUpScreen extends React.Component{
               <MapDriver screenProps={this.getCoordinates}/>
             </View>
           <ScrollView contentContainerStyle={styles.contentContainer}>
-            {}           
+            {}
             <Form ref="form" type={User} options={options} />
-            <Button onPress={this.onPress} title="SIGN UP" color="#841584"></Button>
-            <Text style={{color: 'blue'}} onPress={this.goToSignIn}>Already a member</Text>
+            <Button onPress={this.onPress} title="Sign up" color="#222233"></Button>
+            <Text style={styles.alreadyAMember} onPress={this.goToSignIn}>Already a member? Sign in.</Text>
           </ScrollView>
       </View>
 		);
 	}
-} 
+}
 
 const styles = StyleSheet.create({
    container:{
@@ -105,7 +105,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     alignItems: 'stretch',
     justifyContent: 'center',
-    flexDirection:'column'
+    alignItems: 'center',
+    flexDirection:'column',
   },
   contentContainer: {
     paddingVertical: 2
@@ -120,5 +121,14 @@ const styles = StyleSheet.create({
     flex:1,
     alignItems:'stretch',
     justifyContent:'center'
+  },
+  alreadyAMember:{
+
+      color: '#0A8B8C',
+      marginTop: 25,
+      marginBottom: 25,
+      fontSize: 15,
+      justifyContent: 'center',
+
   },
   });

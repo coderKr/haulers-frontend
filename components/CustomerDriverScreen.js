@@ -82,6 +82,7 @@ export default class CustomerDriverScreen extends React.Component{
                   <Text style={styles.buttonText}> Driver </Text>
               </TouchableOpacity>
               </Animatable.View>
+			  <Text style={styles.motto}> Lets get things moving!  </Text>
             </View>
 		);
 	}
@@ -98,21 +99,39 @@ const styles = StyleSheet.create({
   buttonUser:{
     padding:2,
     backgroundColor: '#222233',
-    margin:5,
+    margin:10,
 	height:100,
     width:300,
+	// textShadowColor: '#000',
+	// textShadowOffset: {width: -1, height: 1},
+	// textShadowRadius: 5
   },
   forText:{
     fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
 	color:'#D7D7E0',
+	textShadowColor: 'rgba(0, 0, 0, 0.75)',
+	textShadowOffset: {width: -1, height: 1},
+	textShadowRadius: 12
   },
   buttonText:{
     fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
     color:'#D7D7E0',
-	top:23
-  }
+	top:23,
+	textShadowColor: 'rgba(0, 0, 0, 0.75)',
+	textShadowOffset: {width: -1, height: 1},
+	textShadowRadius: 12
+},
+motto:{
+	fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color:'#77EDD7',
+	textShadowColor: 'rgba(0, 0, 0, 0.75)',
+	textShadowOffset: {width: -1, height: 1},
+	textShadowRadius: 12
+}
 });

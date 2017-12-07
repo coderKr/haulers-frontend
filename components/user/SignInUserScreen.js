@@ -67,7 +67,7 @@ export default class LoginUserScreen extends React.Component{
     }).catch((error) => {
       console.log("error",error);
     });
-    
+
   }
 
    async _onValueChange(item, selectedValue) {
@@ -83,13 +83,13 @@ export default class LoginUserScreen extends React.Component{
 	render(){
 		return(
           <View style={styles.container}>
-            {}           
+            {}
             <Form ref="form" type={User} options={options} />
-            <Button onPress={this.onPress} title="SIGN IN" color="#841584"></Button>
+            <Button onPress={this.onPress} title="Sign in" color="#222233"></Button>
           </View>
 		);
 	}
-} 
+}
 
 const styles = StyleSheet.create({
   container: {
