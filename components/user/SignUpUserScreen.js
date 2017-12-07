@@ -8,7 +8,7 @@ var Form = t.form.Form;
 var User = t.struct({
   name: t.String,              // a required string
   surname: t.maybe(t.String),  // an optional string
-  email: t.String,              
+  email: t.String,
   phone: t.Number ,
    password: t.String,        // a boolean
 });
@@ -69,7 +69,7 @@ export default class SignUpUserScreen extends React.Component{
           ]
           )
     });
-    
+
   }
 
    async _onValueChange(item, selectedValue) {
@@ -88,14 +88,14 @@ export default class SignUpUserScreen extends React.Component{
 	render(){
 		return(
           <KeyboardAvoidingView keyboardVerticalOffset={-50} behavior="padding" style={styles.container}>
-            {}           
-            <Form ref="form" type={User} options={options} />
-            <Button onPress={this.onPress} title="SIGN UP" color="#841584"></Button>
-            <Text style={{color: 'blue'}} onPress={this.goToSignIn}>Already a member</Text>
+            {}
+            <Form style={styles.formStyle} ref="form" type={User} options={options} />
+            <Button onPress={this.onPress} title="Sign up" color="#222233"></Button>
+            <Text style={styles.alreadyAMember} onPress={this.goToSignIn}>Already a member? Sign in.</Text>
           </KeyboardAvoidingView>
 		);
 	}
-} 
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -105,4 +105,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection:'column',
   },
+  alreadyAMember:{
+      color: '#0A8B8C',
+      marginTop: 10,
+      fontSize: 15,
+  },
+  formStyle:{
+      height:700,
+      width:300,
+  }
   });
